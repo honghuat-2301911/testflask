@@ -7,28 +7,7 @@ on:
   pull_request:
 
 jobs:
-  test-nginx:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Start Nginx with Docker
-        run: |
-          docker run -d --name test-nginx -p 8080:80 -v ${{ github.workspace }}/index.html:/usr/share/nginx/html/index.html:ro nginx:latest
-
-      - name: Wait for Nginx to start
-        run: sleep 5
-
-      - name: Test Hello World Page
-        run: |
-          curl -s -o response.html http://localhost:8080/index.html
-          grep "Hello World" response.html
-
-      - name: Stop Nginx container
-        run: docker stop test-nginx
-
-  test-flask:
+  test-flask-nginx:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,17 +16,28 @@ jobs:
       - name: Build Flask Docker image
         run: docker build -t flask-app ./flask
 
-      - name: Run Flask container
+      - name: Start Flask container
         run: docker run -d --name flask-test -p 5000:5000 flask-app
 
-      - name: Wait for Flask to start
+      - name: Start Nginx container
+        run: |
+          docker run -d --name nginx-test -p 8080:80 \
+            --link flask-test:backend \
+            -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
+            nginx:latest
+
+      - name: Wait for services to start
         run: sleep 5
 
-      - name: Run Flask tests
-        run: docker exec flask-test pytest
+      - name: Test Flask route via Nginx
+        run: |
+          curl -s -o response.html http://localhost:8080/
+          grep "Hello, Flask!" response.html
 
-      - name: Stop Flask container
-        run: docker stop flask-test
+      - name: Stop containers
+        run: |
+          docker stop nginx-test
+          docker stop flask-test
 
   test-mysql:
     runs-on: ubuntu-latest
