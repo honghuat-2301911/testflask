@@ -77,4 +77,4 @@ jobs:
 
       - name: Lint with pylint
         run: |
-          pylint flask/
+          pylint flask/*.py
