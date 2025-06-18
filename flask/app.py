@@ -2,7 +2,7 @@
 This module runs the main Flask application.
 """
 
-from flask import Flask, render_template
+from flask import Flask #,render_template
 # import mysql.connector
 # import os
 
