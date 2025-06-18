@@ -53,41 +53,41 @@ jobs:
   # test mysql
 
   jobs:
-  test-mysql:
-    runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: rootpassword
-          MYSQL_DATABASE: mydb
-          MYSQL_USER: user
-          MYSQL_PASSWORD: userpassword
-        ports:
-          - 3306:3306
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
+    test-mysql:
+      runs-on: ubuntu-latest
+      services:
+        mysql:
+          image: mysql:8.0
+          env:
+            MYSQL_ROOT_PASSWORD: rootpassword
+            MYSQL_DATABASE: mydb
+            MYSQL_USER: user
+            MYSQL_PASSWORD: userpassword
+          ports:
+            - 3306:3306
+          options: >-
+            --health-cmd="mysqladmin ping -h localhost"
+            --health-interval=10s
+            --health-timeout=5s
+            --health-retries=5
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
 
-      - name: Wait for MySQL to be ready
-        run: |
-          for i in {1..30}; do
-            if mysqladmin ping -h"127.0.0.1" -uuser -puserpassword --silent; then
-              break
-            fi
-            sleep 2
-          done
+        - name: Wait for MySQL to be ready
+          run: |
+            for i in {1..30}; do
+              if mysqladmin ping -h"127.0.0.1" -uuser -puserpassword --silent; then
+                break
+              fi
+              sleep 2
+            done
 
-      - name: Run database tests
-        run: |
-          # Example: run your integration tests here
-          pytest
+        - name: Run database tests
+          run: |
+            # Example: run your integration tests here
+            pytest
 
 
   # lint dockerfile
