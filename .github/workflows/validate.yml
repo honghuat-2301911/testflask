@@ -18,7 +18,7 @@ jobs:
       - name: Build Flask Docker image
         run: docker build -t flask-app ./flask
 
-      - name: Start Flask container
+      - name: Start Flask container (Gunicorn)
         run: docker run -d --name flask-test -p 5000:5000 flask-app
 
       - name: Start Nginx container
@@ -34,7 +34,7 @@ jobs:
       - name: Test Flask route via Nginx
         run: |
           curl -s -o response.html http://localhost:8080/
-          grep "Hello, Flask!" response.html
+          grep "Hello, World!" response.html
 
       - name: Stop containers
         run: |
