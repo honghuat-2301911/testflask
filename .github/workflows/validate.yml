@@ -24,7 +24,7 @@ jobs:
       - name: Start Nginx container
         run: |
           docker run -d --name nginx-test -p 8080:80 \
-            --link flask-test:backend \
+            --link flask-test:web \
             -v ${{ github.workspace }}/nginx/nginx.conf:/etc/nginx/nginx.conf:ro \
             nginx:latest
 
