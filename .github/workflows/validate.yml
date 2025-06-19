@@ -17,16 +17,16 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Compose
-        run: docker-compose --version
+      - name: Check Docker Compose version
+        run: docker compose version
 
       - name: Build and start services
-        run: docker-compose up -d --build
+        run: docker compose up -d --build
 
       - name: Wait for services to be healthy
         run: |
           echo "Waiting for DB and web to be ready..."
-          sleep 20  # Adjust as needed for your stack
+          sleep 20  # Increase if needed
 
       - name: Test Flask route via Nginx
         run: |
@@ -35,7 +35,7 @@ jobs:
 
       - name: Tear down
         if: always()
-        run: docker-compose down -v
+        run: docker compose down -v
 
   test-flask-nginx:
     runs-on: ubuntu-latest
