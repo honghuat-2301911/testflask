@@ -2,16 +2,16 @@
 This module runs the main Flask application.
 """
 
-from flask import Flask #,render_template
-# import mysql.connector
-# import os
+from flask import Flask, render_template
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../templates')
+
 
 @app.route('/')
 def index():
-    """Return a greeting from Flask."""
-    return "Hello, Flask!"
+    """Render the index.html template."""
+    return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0')
